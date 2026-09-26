@@ -29,10 +29,15 @@ Browser tests use an isolated in-memory demo database and localhost port 3101. T
 
 ## v0.2 changes
 
+See [CHANGELOG.md](CHANGELOG.md) for the dated implementation history, verification results and known limitations.
+
+[AGENTS.md](AGENTS.md) instructs Codex to update the changelog with future meaningful changes. This uses [Codex's repository instructions](https://learn.chatgpt.com/docs/agent-configuration/agents-md); it is not an automatic Git or background update. Contributors working outside that workflow should update `CHANGELOG.md` with their changes.
+
 - Additive `Encounter` and `ClinicalRecord` tables with tenant-scoped relationships and source-system provenance. Existing retail tables and rules are preserved. Database startup applies numbered migrations transactionally, including adoption of databases created before migration tracking.
 - A connector registry exposes implemented capabilities at authenticated `GET /api/connectors`. Import routes enforce the selected connector's capabilities. CSV/XLSX remains the available import source.
 - `PlatoConnector` is an unavailable future API stub. It performs no network calls, claims no undocumented vendor capabilities, and cannot read or write vendor data.
 - Clinical records are a foundation for future authorised connectors. This release does not expose clinical records in the UI, enable clinical CSV import, or treat a general medical encounter as an optical examination. Language providers receive only opportunity type and tone.
 - The missing frontend entry point and styles have been added using the existing UI components.
+- Windows and Mac setup/start launchers simplify practice-computer installation and preserve existing configuration. Mac installation and startup were verified; Windows execution remains untested.
 
 This remains a local MVP, not a completed production deployment. The small frontend does not yet expose every existing API feature, such as settings, audit browsing, assistant queries or bulk campaign creation. See [architecture notes](docs/architecture.md) for the connector boundary and migration details.

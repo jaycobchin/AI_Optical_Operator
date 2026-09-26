@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Optical Operator — MVP Product & Engineering Specification</title>
+<style>
+:root{--bg:#f6f8fb;--card:#fff;--ink:#172033;--muted:#5e6878;--line:#dfe5ee;--accent:#155eef;--accent2:#0e7490;--soft:#eef4ff;--warn:#fff7e6;--danger:#fff0f0;--ok:#ecfdf3}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.container{max-width:1180px;margin:auto;padding:36px 24px 80px}.hero{background:linear-gradient(135deg,#102a56,#155eef);color:white;padding:44px;border-radius:18px;margin-bottom:24px}.hero h1{font-size:38px;line-height:1.1;margin:0 0 12px}.hero p{font-size:18px;max-width:900px;margin:0}.badge{display:inline-block;background:rgba(255,255,255,.15);padding:6px 10px;border-radius:999px;font-size:12px;margin-bottom:14px}
+nav{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:24px}nav a{color:var(--accent);text-decoration:none;margin-right:18px;line-height:2}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px;margin:20px 0}h2{font-size:27px;margin:0 0 14px}h3{font-size:20px;margin-top:26px}h4{margin-bottom:6px}.lead{font-size:17px}.callout{border-left:4px solid var(--accent);background:var(--soft);padding:16px 18px;margin:18px 0}.warn{border-left-color:#d97706;background:var(--warn)}.danger{border-left-color:#dc2626;background:var(--danger)}.ok{border-left-color:#059669;background:var(--ok)}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}th,td{border:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}th{background:#f2f5f9}
+code{background:#eef1f5;border-radius:4px;padding:2px 5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em}pre{background:#111827;color:#e5e7eb;padding:18px;border-radius:10px;overflow:auto;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}.card{border:1px solid var(--line);border-radius:10px;padding:16px}.card h4{margin-top:0}.small{color:var(--muted);font-size:13px}.check{list-style:none;padding-left:0}.check li{margin:7px 0}.check li:before{content:"☐ ";color:var(--accent);font-weight:bold}.pill{display:inline-block;padding:3px 8px;border-radius:999px;background:#eef1f5;margin:2px;font-size:12px}
+footer{color:var(--muted);font-size:13px;margin-top:30px}
+@media print{body{background:#fff}.container{max-width:none;padding:10px}.hero{color:#000;background:#fff;border:1px solid #ccc}section{break-inside:avoid}nav{display:none}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="hero">
+<div class="badge">BUILD SPECIFICATION • MVP v0.2 • September 2026</div>
+<h1>AI Optical Operator</h1>
+<p><strong>Purpose:</strong> Build an AI intelligence-and-action layer for optical practices that connects to existing practice-management/POS data, identifies revenue and operational opportunities, recommends the next best actions, drafts patient communications, and measures outcomes — without replacing the clinic's existing system of record.</p>
+</div>
+
+<nav>
+<strong>Contents</strong><br>
+<a href="#vision">1. Product vision</a><a href="#scope">2. MVP scope</a><a href="#users">3. Users & jobs</a><a href="#data">4. Data model</a><a href="#engine">5. AI engine</a><a href="#workflows">6. Core workflows</a><a href="#ui">7. UI</a><a href="#architecture">8. Architecture</a><a href="#security">9. Security</a><a href="#integrations">10. Integrations</a><a href="#build">11. Build plan</a><a href="#acceptance">12. Acceptance criteria</a><a href="#future">13. Roadmap</a>
+</nav>
+
+<section id="vision">
+<h2>1. Product vision</h2>
+<p class="lead"><strong>Positioning:</strong> “Keep your existing optical software. Add an AI operator that turns your practice data into actions.”</p>
+<p>The MVP is not another POS, electronic health-record replacement, inventory system, or generic chatbot. Existing systems remain the system of record. The AI Optical Operator becomes the <strong>system of action</strong>: it continuously analyses available practice data, surfaces opportunities, explains why they matter, proposes an action, obtains approval where required, executes permitted communication/workflows, and records the outcome.</p>
+<div class="callout"><strong>Core loop:</strong> Data → Opportunity detection → Prioritisation → Recommended action → Human approval → Execution → Outcome measurement → Learning/next action.</div><h3>Eye-care ecosystem strategy</h3><p>Support optical-retail systems such as FrontWave, PractoPal and Optic Tech, plus medical eye-clinic systems such as Plato Medical and future specialist EMRs. Existing platforms remain the system of record; the AI Operator becomes the cross-system system of action and intelligence.</p><div class="callout"><strong>Architectural principle:</strong> Eye-care ready, optical first.</div>
+<div class="grid">
+<div class="card"><h4>System of record</h4><p>Existing POS/practice software stores patients, prescriptions, transactions, products, appointments and stock.</p></div>
+<div class="card"><h4>System of action</h4><p>AI Operator interprets those records and tells staff what to do next, then helps execute the work.</p></div>
+<div class="card"><h4>Business outcome</h4><p>More appropriate patient reactivation, better retention, fewer missed opportunities, staff time savings and clearer business decisions.</p></div>
+</div>
+</section>
+
+<section id="scope">
+<h2>2. MVP scope</h2>
+<p>The first MVP should deliberately solve <strong>one commercially valuable problem extremely well</strong>: finding patient/revenue opportunities and turning them into measurable outreach.</p>
+
+<h3>MVP name</h3>
+<p><strong>AI Revenue Operator for Optical Practices</strong></p>
+
+<h3>Must-have MVP capabilities</h3>
+<table>
+<tr><th>Capability</th><th>What it does</th><th>Priority</th></tr>
+<tr><td>Data import</td><td>Accept CSV/XLSX exports from an optical practice. Store a normalised copy in the MVP database.</td><td>P0</td></tr>
+<tr><td>Universal optical data model</td><td>Map different source formats into common patient, visit, prescription, transaction, product and communication entities.</td><td>P0</td></tr>
+<tr><td>Data-quality scan</td><td>Detect duplicates, missing contact details, invalid dates, unmapped fields and suspicious records.</td><td>P0</td></tr>
+<tr><td>Patient opportunity engine</td><td>Identify overdue/re-engagement/contact-lens/appointment opportunities using deterministic rules first.</td><td>P0</td></tr>
+<tr><td>Opportunity scoring</td><td>Rank opportunities by urgency, relevance, estimated value, likelihood of response and confidence.</td><td>P0</td></tr>
+<tr><td>AI explanation</td><td>Explain why a patient is on the list using source data; never invent facts.</td><td>P0</td></tr>
+<tr><td>Message generator</td><td>Generate editable WhatsApp/SMS/email drafts appropriate to the selected campaign.</td><td>P0</td></tr>
+<tr><td>Human approval</td><td>Staff review/edit/approve messages before sending.</td><td>P0</td></tr>
+<tr><td>Campaign tracking</td><td>Record campaign, recipient, message, status and response/conversion events where available.</td><td>P0</td></tr>
+<tr><td>ROI dashboard</td><td>Show contacts, responses, appointments, purchases and revenue attributable to campaigns when data permits.</td><td>P0</td></tr>
+<tr><td>Daily opportunity briefing</td><td>Dashboard summarises the highest-value actions for today.</td><td>P0</td></tr>
+</table>
+
+<h3>Explicitly out of scope for v0.1</h3>
+<ul>
+<li>Replacing POS functionality.</li>
+<li>Autonomous clinical diagnosis, treatment recommendations or prescription changes.</li>
+<li>Autonomous patient messaging without configured consent/approval controls.</li>
+<li>Automatic changes to the source POS database.</li>
+<li>Full inventory purchasing automation.</li>
+<li>Full appointment scheduling automation.</li>
+<li>Training a foundation AI model from scratch.</li>
+<li>Cross-clinic identifiable patient-data pooling.</li>
+<li>NEHR integration unless separately specified, assessed and authorised.</li>
+</ul>
+<div class="callout warn"><strong>Principle:</strong> Build the smallest product that can demonstrate measurable business value from real optical data. Do not build a full “optical OS” before proving the revenue/action layer.</div>
+</section>
+
+<section id="users">
+<h2>3. Users and jobs-to-be-done</h2>
+<table>
+<tr><th>User</th><th>Primary job</th><th>MVP experience</th></tr>
+<tr><td>Practice owner</td><td>Know where revenue/opportunities are being lost and what to do.</td><td>Executive dashboard, opportunity list, campaign results.</td></tr>
+<tr><td>Optical manager</td><td>Turn opportunities into daily staff actions.</td><td>Queues, filters, approvals, campaign management.</td></tr>
+<tr><td>Optometrist</td><td>Maintain clinical control and avoid inappropriate automation.</td><td>Clinical information shown as context; no autonomous clinical decision.</td></tr>
+<tr><td>Front-desk staff</td><td>Contact patients efficiently and record outcomes.</td><td>Approved message queue and follow-up tasks.</td></tr>
+</table>
+
+<h3>Primary MVP persona</h3>
+<p>A Singapore optical practice with an existing POS/practice-management system and at least several thousand historical patient records. The practice wants additional value from its existing data without replacing its current software.</p>
+</section>
+
+<section id="data">
+<h2>4. Universal eye-care data model</h2>
+<p>The system must not be designed around one vendor's database or assume every source is a retail POS. Create a canonical internal <strong>eye-care data model</strong> and write adapters that map source data into it. <strong>Architectural principle: eye-care ready, optical first.</strong></p>
+
+<h3>Core entities</h3>
+<table>
+<tr><th>Entity</th><th>Minimum fields</th><th>Why needed</th></tr>
+<tr><td>Practice</td><td>practice_id, name, timezone, outlets, settings</td><td>Tenant isolation and configuration.</td></tr>
+<tr><td>Patient</td><td>patient_id, source_id, name, DOB/age where permitted, phone, email, consent flags, status, created_at</td><td>Identity and communication.</td></tr>
+<tr><td>Family</td><td>family_id, patient relationships</td><td>Useful later for family-level opportunities.</td></tr>
+<tr><td>Appointment</td><td>appointment_id, patient_id, date/time, type, status, outlet, staff</td><td>Missed/overdue appointment opportunities.</td></tr><tr><td>Encounter</td><td>encounter_id, patient_id, date/time, provider, location, encounter_type, source_id</td><td>Vendor-neutral consultation/clinical encounter.</td></tr><tr><td>ClinicalRecord</td><td>clinical_record_id, encounter_id, record_type, structured metadata, source_id</td><td>Future medical eye-clinic support; minimise unnecessary LLM exposure.</td></tr>
+<tr><td>Examination/Visit</td><td>visit_id, patient_id, date, visit type, provider, selected clinical metadata</td><td>Recency and patient lifecycle. Keep clinical fields minimised in MVP.</td></tr>
+<tr><td>Prescription</td><td>rx_id, patient_id, date, modality, OD/OS fields where authorised</td><td>Context and segmentation; not for autonomous clinical decisions.</td></tr>
+<tr><td>ContactLensRx</td><td>brand/product, modality, parameters, date, replacement interval where available</td><td>Replenishment opportunity detection.</td></tr>
+<tr><td>Transaction</td><td>transaction_id, patient_id, date, outlet, staff, subtotal, discount, total, status</td><td>Revenue and recency analysis.</td></tr>
+<tr><td>TransactionLine</td><td>SKU, category, quantity, unit price, discount, cost if available</td><td>Product/category behaviour.</td></tr>
+<tr><td>Product</td><td>SKU, brand, category, model, supplier, cost, selling price</td><td>Future inventory intelligence.</td></tr>
+<tr><td>Communication</td><td>patient_id, campaign_id, channel, sent_at, status, response/outcome</td><td>Closed-loop measurement.</td></tr>
+<tr><td>Campaign</td><td>campaign_id, objective, segment, message template, dates, owner, status</td><td>Campaign management.</td></tr>
+<tr><td>Opportunity</td><td>patient_id, type, score, reasons, evidence, recommended_action, status</td><td>Core AI Operator object.</td></tr>
+</table>
+
+<h3>Data minimisation</h3>
+<p>Only ingest fields needed for the MVP. Sensitive clinical data should not be sent to an LLM when the task can be completed using non-clinical/derived fields. The system should retain provenance showing which source record produced each important insight.</p>
+
+<h3>Example opportunity object</h3>
+<pre>{
+  "opportunity_id": "opp_123",
+  "patient_id": "p_456",
+  "type": "OVERDUE_RECALL",
+  "priority": "HIGH",
+  "score": 87,
+  "evidence": [
+    {"field":"last_exam_date","value":"2024-02-15"},
+    {"field":"days_since_exam","value":589},
+    {"field":"last_transaction_total","value":420}
+  ],
+  "recommended_action":"Invite patient for routine eye examination",
+  "confidence":0.94,
+  "requires_human_approval":true
+}</pre>
+</section>
+
+<section id="engine">
+<h2>5. AI Operator engine</h2>
+<p>The MVP should use a <strong>hybrid architecture</strong>: deterministic rules and calculations decide whether an opportunity exists; the LLM explains, drafts and assists with language. Do not let the LLM independently calculate critical business facts when SQL/code can calculate them reliably.</p>
+
+<h3>Layer A — Data/analytics engine</h3>
+<ul>
+<li>SQL queries and application logic calculate recency, frequency, monetary value, intervals, counts and campaign outcomes.</li>
+<li>Rules identify candidate opportunities.</li>
+<li>All numerical values displayed to users must be traceable to stored data.</li>
+</ul>
+
+<h3>Layer B — Opportunity engine</h3>
+<p>Initial rule families:</p>
+<table>
+<tr><th>Opportunity</th><th>Example trigger</th><th>Recommended action</th></tr>
+<tr><td>Overdue recall</td><td>Last relevant exam/visit exceeds configurable interval.</td><td>Invite for routine follow-up; never imply a diagnosis.</td></tr>
+<tr><td>Missed appointment</td><td>Appointment status = no-show/cancelled without rebooking.</td><td>Offer convenient rebooking.</td></tr>
+<tr><td>Contact-lens replenishment</td><td>Prior CL purchase + estimated replacement interval reached + no recent replenishment.</td><td>Invite patient to replenish/check stock or arrange appointment according to practice policy.</td></tr>
+<tr><td>Inactive valuable patient</td><td>Previously active/high-value patient with unusually long inactivity.</td><td>Re-engagement message.</td></tr>
+<tr><td>Recent purchase follow-up</td><td>Recent transaction with configured follow-up window.</td><td>Service/satisfaction follow-up.</td></tr>
+<tr><td>Uncollected order</td><td>Order exists and remains uncollected beyond configurable threshold.</td><td>Collection reminder.</td></tr>
+</table>
+
+<h3>Opportunity scoring</h3>
+<p>Use a transparent score, not a black-box model, for v0.1. Example:</p>
+<pre>score =
+  urgency_weight * urgency +
+  recency_gap_weight * recency_gap +
+  historical_value_weight * normalized_historical_value +
+  actionability_weight * actionability +
+  response_history_weight * response_likelihood
+</pre>
+<p>Store every component and expose a simple “Why this is prioritised” explanation. Thresholds must be configurable per practice.</p>
+
+<h3>Layer C — LLM assistant</h3>
+<p>The LLM receives only the minimum context required for the task. It can:</p>
+<ul>
+<li>Explain an opportunity in plain language.</li>
+<li>Draft patient-friendly messages.</li>
+<li>Rewrite messages to be shorter, warmer or more professional.</li>
+<li>Summarise campaign results.</li>
+<li>Answer owner questions about the practice using retrieved, structured data.</li>
+<li>Suggest additional segments or questions for future analysis.</li>
+</ul>
+
+<div class="callout danger"><strong>LLM guardrail:</strong> The model must never fabricate patient history, purchase history, consent, appointment availability, clinical findings, prices or stock. If the required fact is absent, it must say that the information is unavailable.</div>
+</section>
+
+<section id="workflows">
+<h2>6. Core MVP workflows</h2>
+
+<h3>Workflow A — Onboard a practice</h3>
+<ol>
+<li>Create practice tenant.</li>
+<li>Create admin user.</li>
+<li>Select source system or “Generic CSV”.</li>
+<li>Upload exported CSV/XLSX files.</li>
+<li>System profiles the files and shows detected columns.</li>
+<li>Map source columns to canonical fields.</li>
+<li>Show confidence and unmapped fields.</li>
+<li>Run duplicate/data-quality checks.</li>
+<li>Show import preview.</li>
+<li>User approves.</li>
+<li>Import into tenant database.</li>
+<li>Run initial opportunity analysis.</li>
+</ol>
+
+<h3>Workflow B — Daily AI briefing</h3>
+<p>Dashboard should open with:</p>
+<pre>GOOD MORNING — YOUR PRACTICE
+
+47 overdue follow-up opportunities
+18 contact-lens replenishment opportunities
+12 inactive high-value patients
+8 missed appointments requiring follow-up
+
+AI recommendation:
+Start with the 18 contact-lens opportunities.
+Reason: strong actionability + recent historical purchase pattern.
+
+[Review opportunities]</pre>
+
+<h3>Workflow C — Review an opportunity</h3>
+<p>Show:</p>
+<ul>
+<li>Patient identifier/name according to role permissions.</li>
+<li>Opportunity type.</li>
+<li>Priority.</li>
+<li>Evidence used.</li>
+<li>Last relevant transaction/visit dates.</li>
+<li>Recommended action.</li>
+<li>Suggested message.</li>
+<li>Confidence.</li>
+<li>“Approve &amp; queue” / “Edit” / “Dismiss” / “Snooze”.</li>
+</ul>
+
+<h3>Workflow D — Campaign</h3>
+<ol>
+<li>User chooses an opportunity segment.</li>
+<li>System shows estimated audience and exclusion reasons.</li>
+<li>AI drafts message.</li>
+<li>User edits/approves.</li>
+<li>System queues communication through a configured provider.</li>
+<li>Each event is logged.</li>
+<li>Conversions are linked back where possible.</li>
+<li>Dashboard reports outcomes.</li>
+</ol>
+
+<h3>Workflow E — Owner asks a business question</h3>
+<p>Example: <strong>“Why did sales fall last month?”</strong></p>
+<p>System should translate the question into safe analytical operations, retrieve structured data, calculate comparisons, and produce a concise explanation with evidence. Example answer format:</p>
+<pre>Revenue decreased 8.4% compared with the previous month.
+
+Main observed changes:
+• 13% fewer transactions
+• average transaction value increased 5%
+• contact-lens revenue decreased 21%
+• Branch B accounted for most of the transaction decline
+
+Possible operational actions:
+1. Review overdue CL replenishment opportunities.
+2. Review Branch B appointment/no-show pattern.
+3. Check stock availability for top CL SKUs.
+
+These are observations from the available data, not proof of causation.</pre>
+
+<h3>Workflow F — Data refresh</h3>
+<p>Design the MVP so a new CSV upload can be treated as an incremental refresh rather than only a one-time migration. Later connectors can replace this mechanism without redesigning the analytics layer.</p>
+</section>
+
+<section id="ui">
+<h2>7. User interface</h2>
+<p>Build a clean web dashboard first. The UI should feel like a business operations product, not a chatbot.</p>
+
+<h3>Screen 1 — Login</h3>
+<ul><li>Email/password or development-only auth.</li><li>Practice/tenant context.</li><li>Role-aware navigation.</li></ul>
+
+<h3>Screen 2 — Dashboard</h3>
+<div class="grid">
+<div class="card"><h4>Opportunities</h4><p>Count by type and priority.</p></div>
+<div class="card"><h4>Potential revenue</h4><p>Clearly labelled as an estimate, not guaranteed revenue.</p></div>
+<div class="card"><h4>Campaigns</h4><p>Active campaigns and outcomes.</p></div>
+<div class="card"><h4>Data health</h4><p>Import quality, missing fields, last refresh.</p></div>
+</div>
+
+<h3>Screen 3 — Opportunities</h3>
+<p>Filters: opportunity type, priority, outlet, date range, patient segment, status. Table columns: patient, opportunity, evidence summary, score, last activity, recommended action, status.</p>
+
+<h3>Screen 4 — Opportunity detail</h3>
+<p>Evidence timeline + explanation + draft communication + action buttons.</p>
+
+<h3>Screen 5 — Campaigns</h3>
+<p>Campaign creation, audience preview, exclusions, message editor, approval, send/queue, results.</p>
+
+<h3>Screen 6 — Campaign analytics</h3>
+<p>Recipients → delivered → replies → appointments → purchases → revenue. Show conversion rates only where denominator/data is valid.</p>
+
+<h3>Screen 7 — Data</h3>
+<p>Source files, import runs, mappings, data-quality warnings, last sync, record counts and failed rows.</p>
+
+<h3>Screen 8 — Settings</h3>
+<p>Practice settings, opportunity thresholds, communication rules, consent rules, user roles, outlets, campaign defaults and AI configuration.</p>
+
+<h3>Screen 9 — AI Assistant</h3>
+<p>A controlled natural-language interface for questions such as “Show me patients overdue by more than 18 months” or “How did contact lens sales change last month?” It must ground responses in structured tenant data.</p>
+</section>
+
+<section id="architecture">
+<h2>8. Technical architecture for Codex/VS Code</h2>
+<p>Use a modular monolith for the MVP. Do not start with microservices.</p>
+
+<h3>Recommended logical stack</h3>
+<table>
+<tr><th>Layer</th><th>MVP responsibility</th></tr>
+<tr><td>Frontend</td><td>Responsive web application; dashboard, tables, forms, campaign approval.</td></tr>
+<tr><td>Backend/API</td><td>Authentication, tenant isolation, imports, opportunities, campaigns, analytics, audit events.</td></tr>
+<tr><td>Database</td><td>Relational database such as PostgreSQL for canonical entities and analytics.</td></tr>
+<tr><td>Object storage</td><td>Temporary/raw import files and controlled exports; encrypt and apply retention rules.</td></tr>
+<tr><td>Background jobs</td><td>Imports, deduplication, opportunity generation, campaign processing.</td></tr>
+<tr><td>LLM layer</td><td>Message drafting, explanations and natural-language analytics assistance. Keep provider abstraction.</td></tr>
+<tr><td>Rules engine</td><td>Deterministic opportunity rules and scoring.</td></tr>
+<tr><td>Audit layer</td><td>Track imports, user approvals, AI outputs, actions, sends and configuration changes.</td></tr>
+</table>
+
+<h3>Suggested repository structure</h3>
+<pre>/ai-optical-operator
+  /apps
+    /web
+    /api
+  /packages
+    /domain
+    /data-model
+    /rules
+    /ai
+    /ui
+  /database
+    /migrations
+    /seed
+  /connectors
+    /generic-csv
+    /frontwave
+    /optic-tech
+    /practopal
+    /plato
+  /jobs
+  /tests
+  /docs
+  /scripts
+  .env.example
+  README.md</pre>
+
+<p>The exact programming language/framework can be selected based on the developer's strongest stack. The architecture matters more than choosing a particular framework.</p>
+
+<h3>Key backend modules</h3>
+<ul>
+<li><code>auth</code></li>
+<li><code>tenants</code></li>
+<li><code>users</code></li>
+<li><code>imports</code></li>
+<li><code>mapping</code></li>
+<li><code>patients</code></li>
+<li><code>appointments</code></li>
+<li><code>transactions</code></li>
+<li><code>products</code></li>
+<li><code>prescriptions</code></li>
+<li><code>opportunities</code></li>
+<li><code>campaigns</code></li>
+<li><code>communications</code></li>
+<li><code>analytics</code></li>
+<li><code>ai</code></li>
+<li><code>audit</code></li>
+<li><code>settings</code></li>
+</ul>
+</section>
+
+<section id="security">
+<h2>9. Security, privacy and governance</h2>
+<div class="callout danger"><strong>This is a health-data product.</strong> Treat privacy/security as architecture requirements, not a later feature.</div>
+<p>The MVP should be designed around Singapore data-protection requirements and the practice's contractual/regulatory obligations. PDPC guidance specifically highlights protection obligations for service providers handling client personal data in AI systems and recommends practices such as data mapping, labelling and provenance records. citeturn0search24</p>
+<p>Singapore's Health Information Act framework was enacted in February 2026 and includes requirements around health information contribution, access and protection. The current official resources also identify cybersecurity/data-security expectations for healthcare providers and relevant health-information systems. citeturn0search2turn0search8</p>
+
+<h3>Mandatory MVP security requirements</h3>
+<ul class="check">
+<li>Strict tenant isolation: Clinic A can never query Clinic B data.</li>
+<li>Role-based access control.</li>
+<li>Encryption in transit and at rest.</li>
+<li>Secure secrets management; never hard-code API keys.</li>
+<li>Audit logging for logins, imports, data views where appropriate, approvals, sends and administrative changes.</li>
+<li>Import-file access controls and retention policy.</li>
+<li>Data minimisation.</li>
+<li>LLM prompt/data logging policy; avoid retaining sensitive prompts unnecessarily.</li>
+<li>No cross-tenant LLM training using identifiable patient data.</li>
+<li>Human approval for patient communications in MVP.</li>
+<li>No autonomous clinical decisions.</li>
+<li>Backups and tested restore process.</li>
+<li>Rate limiting and abuse protection.</li>
+<li>Validation and sanitisation of uploaded files.</li>
+</ul>
+
+<h3>Data provenance</h3>
+<p>Every generated opportunity should be traceable to source data and calculation logic. Store source record IDs, calculation timestamp, rule version and relevant evidence. This makes the system explainable and auditable.</p>
+
+<h3>Data migration</h3>
+<p>Singapore's Code of Practice for Data Portability describes accurate and complete porting of records as important for continuity of care and sets expectations around data migration practices. The product should therefore treat import/migration as a controlled process with mapping, validation, acceptance criteria and reconciliation rather than “upload a spreadsheet and hope.” citeturn0search25</p>
+
+<h3>Important regulatory boundary</h3>
+<p>Do not claim the MVP is “PDPA compliant”, “HIA compliant”, “NEHR compliant” or medically certified merely because technical safeguards exist. Compliance depends on the deployment, contracts, purposes, data flows, applicable requirements and professional/legal assessment.</p>
+</section>
+
+<section id="integrations">
+<h2>10. Integration strategy</h2>
+<p>Start with <strong>Generic CSV/XLSX import</strong>. This allows the product to be tested with real practice data before negotiating or building vendor-specific integrations.</p>
+
+<h3>Plato Medical integration</h3><p>Plato Medical should be treated as a first-class <strong>future live connector</strong>. Obtain current official API documentation, scopes, commercial terms and authorisation before implementation. Start read-first, do not invent undocumented endpoints, and make connector capabilities explicit.</p><pre>Plato Medical → PlatoConnector → Universal Eye-Care Data Model → AI Operator Engine</pre><h3>Connector abstraction</h3>
+<pre>interface OpticalConnector {
+  detect(source): SourceProfile
+  inspect(source): SourceSchema
+  map(source, canonicalSchema): MappingResult
+  validate(mappedData): ValidationReport
+  import(mappedData): ImportResult
+}</pre>
+
+<p>Future adapters can include:</p>
+<ul>
+<li><strong>FrontWaveConnector</strong></li>
+<li><strong>OpticTechConnector</strong></li>
+<li><strong>PractoPalConnector</strong></li>
+<li><strong>PlatoConnector</strong></li>
+<li><strong>GenericCSVConnector</strong></li>
+</ul>
+
+<p>Do not reverse-engineer a vendor's private database or bypass access controls. Use authorised exports, APIs or vendor-supported mechanisms. The public availability of a particular vendor API/export should be verified before implementation.</p>
+
+<h3>Import wizard</h3>
+<ol>
+<li>Upload/select source.</li>
+<li>Detect file type and columns.</li>
+<li>Display mapping suggestions.</li>
+<li>Show confidence for each mapping.</li>
+<li>Flag ambiguous fields.</li>
+<li>Run validation.</li>
+<li>Show duplicate candidates.</li>
+<li>Preview affected record counts.</li>
+<li>Require approval.</li>
+<li>Import.</li>
+<li>Generate import report.</li>
+</ol>
+
+<h3>Migration report</h3>
+<p>Example:</p>
+<pre>Import completed
+
+Patients detected:       12,438
+Imported:                12,201
+Duplicate candidates:       143
+Invalid records:             58
+Unmapped rows:               36
+
+Data quality:
+Contactable patients:     10,842
+Patients with purchases:   9,117
+Patients with visits:     11,002
+
+[Review exceptions]</pre>
+</section>
+
+<section id="build">
+<h2>11. Build sequence for Codex</h2>
+<p>Build in vertical slices so every stage produces a working application.</p>
+
+<h3>Phase 0 — Foundation</h3>
+<ul class="check">
+<li>Create repository and development instructions.</li>
+<li>Set up frontend/backend/database.</li>
+<li>Create environment configuration.</li>
+<li>Create tenant/user model.</li>
+<li>Create database migrations.</li>
+<li>Create seed/demo practice.</li>
+</ul>
+
+<h3>Phase 1 — Data ingestion</h3>
+<ul class="check">
+<li>CSV/XLSX upload.</li>
+<li>File inspection.</li>
+<li>Column mapping UI.</li>
+<li>Canonical data model.</li>
+<li>Validation.</li>
+<li>Deduplication candidate detection.</li>
+<li>Import preview and commit.</li>
+<li>Import audit log.</li>
+</ul>
+
+<h3>Phase 2 — Opportunity engine</h3>
+<ul class="check">
+<li>Implement overdue recall rule.</li>
+<li>Implement missed appointment rule.</li>
+<li>Implement CL replenishment rule.</li>
+<li>Implement inactive patient rule.</li>
+<li>Implement uncollected order rule if order data exists.</li>
+<li>Implement transparent scoring.</li>
+<li>Generate opportunity explanations.</li>
+</ul>
+
+<h3>Phase 3 — Dashboard</h3>
+<ul class="check">
+<li>Daily briefing.</li>
+<li>Opportunity table.</li>
+<li>Opportunity detail.</li>
+<li>Filters.</li>
+<li>Status workflow: new → approved/queued → completed/dismissed.</li>
+</ul>
+
+<h3>Phase 4 — AI layer</h3>
+<ul class="check">
+<li>LLM provider abstraction.</li>
+<li>Structured context builder.</li>
+<li>Prompt templates.</li>
+<li>Message generation.</li>
+<li>Explanation generation.</li>
+<li>Natural-language analytics with tool/function calls to controlled queries.</li>
+<li>Output validation.</li>
+</ul>
+
+<h3>Phase 5 — Campaigns</h3>
+<ul class="check">
+<li>Campaign creation.</li>
+<li>Audience preview.</li>
+<li>Exclusion rules.</li>
+<li>Message editor.</li>
+<li>Approval workflow.</li>
+<li>Provider abstraction for SMS/WhatsApp/email.</li>
+<li>Mock sending provider for development.</li>
+<li>Event tracking.</li>
+</ul>
+
+<h3>Phase 6 — Measurement</h3>
+<ul class="check">
+<li>Conversion linking.</li>
+<li>Revenue attribution rules.</li>
+<li>Campaign dashboard.</li>
+<li>Before/after comparisons.</li>
+<li>Exportable report.</li>
+</ul>
+
+<h3>Phase 7 — Production hardening</h3>
+<ul class="check">
+<li>RBAC testing.</li>
+<li>Tenant-isolation tests.</li>
+<li>Security review.</li>
+<li>Audit review.</li>
+<li>Backup/restore.</li>
+<li>Error monitoring.</li>
+<li>Rate limits.</li>
+<li>Data-retention controls.</li>
+<li>Privacy/contract documentation.</li>
+</ul>
+</section>
+
+<section id="acceptance">
+<h2>12. MVP acceptance criteria</h2>
+<table>
+<tr><th>Area</th><th>Acceptance test</th></tr>
+<tr><td>Tenant isolation</td><td>Create two practices; queries, dashboards and AI responses for Practice A must never expose Practice B records.</td></tr>
+<tr><td>Import</td><td>A sample CSV can be mapped, validated, previewed and imported without manual database edits.</td></tr>
+<tr><td>Data quality</td><td>Duplicate and invalid records are surfaced before final import.</td></tr>
+<tr><td>Opportunity detection</td><td>Known synthetic test patients trigger the expected opportunity rules.</td></tr>
+<tr><td>Explainability</td><td>Every opportunity displays evidence and rule/calculation provenance.</td></tr>
+<tr><td>AI accuracy</td><td>AI message drafts contain only supplied facts and never invent patient details.</td></tr>
+<tr><td>Approval</td><td>No patient communication is sent by the MVP without the configured approval path.</td></tr>
+<tr><td>Analytics</td><td>Campaign results reconcile against stored events and transactions.</td></tr>
+<tr><td>Auditability</td><td>Imports, approvals and campaign actions have timestamped audit events.</td></tr>
+<tr><td>Clinical safety</td><td>The system cannot independently diagnose, prescribe, alter prescriptions or write clinical records.</td></tr>
+<tr><td>Failure handling</td><td>Failed imports/jobs produce actionable errors and do not partially corrupt canonical data.</td></tr>
+<tr><td>LLM failure</td><td>If the AI provider is unavailable, deterministic dashboard/opportunity functions continue working.</td></tr>
+</table>
+
+<h3>Demo dataset</h3>
+<p>Before connecting real patient data, create a synthetic dataset of at least 1,000 patients, 3,000 transactions, appointments, prescriptions, contact-lens purchases and campaign events. Include deliberately tricky cases: duplicate names, shared family phone numbers, missing DOBs, invalid phone numbers, patients with no consent, multiple purchases on the same day, cancelled appointments, unusually high-value customers and incomplete records.</p>
+
+<h3>Golden test cases</h3>
+<ol>
+<li>Patient overdue for recall appears in the correct segment.</li>
+<li>Patient with recent recall does not appear as overdue.</li>
+<li>CL patient due for replenishment appears only when configured conditions are satisfied.</li>
+<li>Patient with no marketing permission is excluded from a marketing campaign.</li>
+<li>Duplicate patient candidates are not silently merged.</li>
+<li>AI cannot invent missing facts.</li>
+<li>Owner's revenue question returns calculations from database tools rather than invented numbers.</li>
+<li>Practice A cannot retrieve Practice B through direct API, UI filters or AI queries.</li>
+</ol>
+</section>
+
+<section id="future">
+<h2>13. Roadmap after MVP</h2>
+<table>
+<tr><th>Stage</th><th>Product expansion</th></tr>
+<tr><td>V0.1</td><td>Revenue Operator: data import → opportunities → approved outreach → measurement.</td></tr>
+<tr><td>V0.2</td><td>Live connectors, richer appointment workflows, improved segmentation and automated refresh.</td></tr>
+<tr><td>V0.3</td><td>Inventory intelligence: slow movers, stock-out risk, branch transfers and demand forecasting.</td></tr>
+<tr><td>V0.4</td><td>Operations Agent: daily staff tasks, uncollected orders, follow-up queues and workflow automation.</td></tr>
+<tr><td>V0.5</td><td>Business Intelligence Agent: natural-language practice analysis and anomaly detection.</td></tr>
+<tr><td>V1</td><td>Multi-agent Optical Operator: Patient + Marketing + Inventory + Business + Operations agents connected through a shared action layer.</td></tr>
+<tr><td>Later</td><td>Aggregated, properly governed benchmarking across practices; deeper vendor integrations; broader optical practice OS functionality.</td></tr>
+</table>
+
+<h3>Long-term closed-loop example</h3>
+<div class="callout">
+<strong>Inventory Agent:</strong> identifies an overstocked product → <strong>Patient Agent:</strong> identifies appropriate existing customer segments → <strong>Marketing Agent:</strong> proposes an approved campaign → <strong>Operations Agent:</strong> handles follow-up → <strong>Business Agent:</strong> measures revenue and margin → results feed future prioritisation.
+</div>
+
+<h3>What the product should eventually feel like</h3>
+<p>The owner should not need to know which report to run. They should be able to say:</p>
+<pre>“What should my team work on today?”
+
+“What opportunities am I missing?”
+
+“Why did revenue fall?”
+
+“Which patients are most appropriate to contact?”
+
+“Can you prepare a campaign?”
+
+“Which products are becoming slow-moving?”
+
+“Show me what happened after our last campaign.”</pre>
+
+<p>The Operator should respond with evidence, recommended actions and clear human approval points.</p>
+</section>
+
+<section>
+<h2>14. Product principles for the development team</h2>
+<ol>
+<li><strong>Action over dashboards:</strong> every important insight should lead to a possible action.</li>
+<li><strong>Evidence over AI confidence:</strong> show the underlying data and calculations.</li>
+<li><strong>Rules first, LLM second:</strong> use deterministic code for facts and calculations.</li>
+<li><strong>Human control:</strong> especially for patient communications and anything clinical.</li>
+<li><strong>Tenant isolation by design:</strong> never rely on prompts alone to separate customers.</li>
+<li><strong>Vendor agnostic:</strong> canonical model first; connectors second.</li>
+<li><strong>Do not replace the POS initially:</strong> create value on top of existing systems.</li>
+<li><strong>Measure ROI:</strong> every campaign and automation should have an observable outcome where feasible.</li>
+<li><strong>Fail safely:</strong> AI failure must not break core practice data.</li>
+<li><strong>Build for migration:</strong> imports and mappings should be versioned and auditable.</li>
+<li><strong>Keep the MVP narrow:</strong> prove one revenue/action loop before adding every possible AI feature.</li>
+</ol>
+</section>
+
+<section>
+<h2>15. Initial Codex instruction</h2>
+<p>Use the following as the first high-level instruction when starting the coding project. It is intentionally concise; the full specification above is the source of truth.</p>
+<pre>You are building the AI Optical Operator MVP described in this specification.
+
+Build a production-minded modular monolith web application for optical practices.
+
+The MVP is NOT a POS replacement. Existing optical systems remain the system of record. Our application is a system of action that imports/receives practice data, normalises it into a universal optical data model, identifies patient/revenue opportunities, explains the evidence, generates editable patient communications, requires human approval, tracks campaign outcomes, and measures business results.
+
+Implement in vertical slices:
+1. authentication + tenant isolation
+2. canonical database schema
+3. CSV/XLSX import wizard
+4. data validation + duplicate detection
+5. deterministic opportunity engine
+6. opportunity dashboard/detail pages
+7. AI message/explanation layer
+8. campaign approval workflow
+9. mock communication provider
+10. campaign analytics
+11. audit log
+12. synthetic demo dataset
+13. automated tests, especially tenant isolation and AI hallucination safeguards.
+
+Do not build autonomous clinical decision-making.
+Do not allow the LLM to invent facts.
+Do not allow patient communications to be sent without the configured approval workflow.
+Do not expose one practice's data to another practice.
+Use deterministic database/application logic for numerical calculations.
+Keep LLM integration behind an abstraction so the model/provider can be changed later.
+
+Before implementing a feature, update the relevant tests and preserve the architecture described in this specification.</pre>
+</section>
+
+<section>
+<h2>16. Current regulatory references</h2>
+<p>The specification incorporates high-level considerations from Singapore's current official sources. These are development considerations, not legal advice.</p>
+<ul>
+<li>PDPC Advisory Guidelines on Personal Data in AI Recommendation and Decision Systems: protection obligations for service providers handling client personal data in AI systems, including data mapping/labelling and provenance practices. citeturn0search24</li>
+<li>Singapore Health Information Act overview and implementation resources: health-information governance, contribution/access/protection frameworks and cybersecurity/data-security expectations. citeturn0search2turn0search8</li>
+<li>MOH Code of Practice for Data Portability: expectations for accurate and complete migration of healthcare records and client-centric migration practices. citeturn0search25</li>
+</ul>
+</section>
+
+<footer>
+AI Optical Operator — MVP Product & Engineering Specification. Prepared as a build specification for Codex/VS Code. Version 0.2, September 2026.
+</footer>
+
+</div>
+</body>
+</html>
